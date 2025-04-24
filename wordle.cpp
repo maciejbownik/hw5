@@ -33,7 +33,7 @@ std::set<std::string> wordle(
 // Define any helper functions here
 
 void wordleHelper(string word, string floating, int pos, const set<string>& dict, set<string>& results){
-	if (word.length() == pos){
+	if (pos == word.length()){
 		if(dict.count(word) > 0 and floating.empty()){
 			results.insert(word);
 		}
@@ -61,19 +61,29 @@ void wordleHelper(string word, string floating, int pos, const set<string>& dict
 
 	if (word.length() - pos > floating.length()){
 		for(char c = 'a'; c <= 'z'; c++){
+			/*
 			bool is_floating = false;
 			for(int i = 0; i < floating.length(); i++){
 				if(c == floating[i]){
 					is_floating = true;
 					break;
 				}
+				*/
+				if(floating.find(c) != string::npos) continue;
+
+				string newWord = word;
+				newWord[pos] = c;
+
+				wordleHelper(newWord, floating, pos +1, dict, results);
 		}
+		/*
 
 			if(!is_floating){
 				string newWord = word;
 				newWord[pos] = c;
 				wordleHelper(newWord, floating, pos + 1, dict, results);
 			}
+			*/
 		}
 	}
-}
+//}
