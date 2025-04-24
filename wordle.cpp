@@ -13,7 +13,8 @@ using namespace std;
 
 
 // Add prototypes of helper functions here
-void wordleHelper(string word, string floating, int pos, const set<string>& dict, set<string>& results);
+void wordleHelper(const string& word,const string& floating, size_t pos, const set<string>& dict, set<string>& results);
+int dashesRemain(string input, int index);
 
 
 // Definition of primary wordle function
@@ -32,34 +33,46 @@ std::set<std::string> wordle(
 
 // Define any helper functions here
 
-void wordleHelper(string word, string floating, int pos, const set<string>& dict, set<string>& results){
-	if (pos == word.length()){
-		if(dict.count(word) > 0 and floating.empty()){
+void wordleHelper(const string& word,const string& floating, size_t pos, const set<string>& dict, set<string>& results){
+	size_t dashes = dashesRemain(word, pos);
+
+	if(floating.length() > dashes){
+		return;
+	}
+
+	if(dashes == 0){
+		if((dict.find(word) != dict.end()) and (floating.size() == 0)){
 			results.insert(word);
 		}
 		return;
 	}
+
+
+/*
+	if (pos == word.length()){
+		if((dict.find(word) != dict.end()) and (floating.size() == 0)){
+			results.insert(word);
+		}
+		return;
+	} */
 
 	if(word[pos] != '-'){
 		wordleHelper(word, floating, pos + 1, dict, results);
 		return;
 	}
 
-	for(int i = 0; i < floating.length(); i++){
+	for(size_t i = 0; i < floating.length(); i++){
 		char floatChar = floating[i];
-
 		string remainingFloat = floating;
-
 		remainingFloat.erase(i, 1);
 
 		string newWord = word;
-
 		newWord[pos] = floatChar;
 
 		wordleHelper(newWord, remainingFloat, pos + 1, dict, results);
 	}
 
-	if (word.length() - pos > floating.length()){
+	if (floating.length() < dashes){
 		for(char c = 'a'; c <= 'z'; c++){
 			/*
 			bool is_floating = false;
@@ -69,7 +82,7 @@ void wordleHelper(string word, string floating, int pos, const set<string>& dict
 					break;
 				}
 				*/
-				if(floating.find(c) != string::npos) continue;
+				//if(floating.find(c) != string::npos) continue;
 
 				string newWord = word;
 				newWord[pos] = c;
@@ -86,4 +99,15 @@ void wordleHelper(string word, string floating, int pos, const set<string>& dict
 			*/
 		}
 	}
+
+int dashesRemain(string input, int index){
+	int count = 0;
+	for(size_t i = index; i < input.length(); i++){
+		if(input[i] == '-'){
+			count++;
+		};
+	}
+	return count;
+}
+
 //}
