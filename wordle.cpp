@@ -14,7 +14,6 @@ using namespace std;
 
 // Add prototypes of helper functions here
 void wordleHelper(const string& word,const string& floating, size_t pos, const set<string>& dict, set<string>& results);
-int dashesRemain(string input, int index);
 
 
 // Definition of primary wordle function
@@ -34,7 +33,13 @@ std::set<std::string> wordle(
 // Define any helper functions here
 
 void wordleHelper(const string& word,const string& floating, size_t pos, const set<string>& dict, set<string>& results){
-	size_t dashes = dashesRemain(word, pos);
+	size_t dashes = 0;
+
+	for(size_t ind = pos; ind < word.length(); ind++){
+		if(word[ind] == '-'){
+			dashes++;
+		}
+	} 
 
 	if(floating.length() > dashes){
 		return;
@@ -46,15 +51,6 @@ void wordleHelper(const string& word,const string& floating, size_t pos, const s
 		}
 		return;
 	}
-
-
-/*
-	if (pos == word.length()){
-		if((dict.find(word) != dict.end()) and (floating.size() == 0)){
-			results.insert(word);
-		}
-		return;
-	} */
 
 	if(word[pos] != '-'){
 		wordleHelper(word, floating, pos + 1, dict, results);
@@ -74,40 +70,12 @@ void wordleHelper(const string& word,const string& floating, size_t pos, const s
 
 	if (floating.length() < dashes){
 		for(char c = 'a'; c <= 'z'; c++){
-			/*
-			bool is_floating = false;
-			for(int i = 0; i < floating.length(); i++){
-				if(c == floating[i]){
-					is_floating = true;
-					break;
-				}
-				*/
-				//if(floating.find(c) != string::npos) continue;
+				if(floating.find(c) != string::npos) continue;
 
 				string newWord = word;
 				newWord[pos] = c;
 
 				wordleHelper(newWord, floating, pos +1, dict, results);
 		}
-		/*
-
-			if(!is_floating){
-				string newWord = word;
-				newWord[pos] = c;
-				wordleHelper(newWord, floating, pos + 1, dict, results);
-			}
-			*/
 		}
 	}
-
-int dashesRemain(string input, int index){
-	int count = 0;
-	for(size_t i = index; i < input.length(); i++){
-		if(input[i] == '-'){
-			count++;
-		};
-	}
-	return count;
-}
-
-//}

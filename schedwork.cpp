@@ -89,7 +89,18 @@ bool scheduleHelper(
 		}
 
 		for(Worker_T worker = 0; worker < numWorkers; worker++){
-			if(isValid(avail, maxShifts, sched, shiftsScheduled, day, slot, worker)){
+			bool valid = true;
+			if(!avail[day][worker]) continue;
+			if(shiftsScheduled[worker] >= maxShifts) continue;
+
+			for(size_t s = 0; s < slot; s++){
+				if(sched[day][s] == worker){
+					valid = false;
+				}
+			}
+			if(!valid) continue;
+
+
 				sched[day][slot] = worker;
 				shiftsScheduled[worker]++;
 
@@ -99,33 +110,7 @@ bool scheduleHelper(
 
 				sched[day][slot] = INVALID_ID;
 				shiftsScheduled[worker]--;
-			}
 		}
 		return false;
 	}
-
-bool isValid(
-	const AvailabilityMatrix& avail,
-	const size_t maxShifts,
-	const DailySchedule& sched,
-	const std::vector<size_t>& shiftsScheduled,
-	size_t day,
-	size_t slot,
-	Worker_T worker
-){
-	if(!avail[day][worker]){
-		return false;
-	}
-
-	if(shiftsScheduled[worker] >= maxShifts){
-		return false;
-	}
-
-	for(size_t s = 0; s < slot; s++){
-		if(sched[day][s] == worker){
-			return false;
-		}
-	}
-	return true;
-}
 
